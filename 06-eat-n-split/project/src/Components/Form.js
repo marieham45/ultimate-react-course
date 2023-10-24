@@ -7,7 +7,7 @@ const Form = ({ onAddFriend }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const newFriend = {
-      id: new Date(),
+      id: new Date().getTime(),
       name: name,
       image: "https://i.pravatar.cc/480",
       balance: 0,

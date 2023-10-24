@@ -1,7 +1,6 @@
 import Friend from "./Friend";
 
-const Friends = ({ data, onBillOpen, onSelect, selected }) => {
-  console.log(data);
+const Friends = ({ data, onSelect, selected }) => {
   return (
     <ul>
       {data.map((person) => {
@@ -9,7 +8,6 @@ const Friends = ({ data, onBillOpen, onSelect, selected }) => {
           <Friend
             person={person}
             key={person.id}
-            onBillOpen={onBillOpen}
             onSelect={onSelect}
             selected={selected === person.id ? true : false}
           />

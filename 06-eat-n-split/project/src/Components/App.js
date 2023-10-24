@@ -15,7 +15,6 @@ const App = () => {
 
   const handleAddFriend = (friend) => {
     setFriends((friends) => (friends = [...friends, friend]));
-    console.log(friends);
     setFormOpen(false);
   };
 
@@ -25,11 +24,14 @@ const App = () => {
     setFriendExpense(friendExpense);
   };
 
-  const handleBillOpen = () => {
-    setBillOpen(!billOpen);
-  };
   const handleSelect = (id) => {
-    setSelected(id === selected ? null : id);
+    if (id !== selected) {
+      setSelected(id);
+      setBillOpen(true);
+    } else {
+      setSelected(null);
+      setBillOpen(false);
+    }
   };
 
   return (
@@ -38,7 +40,6 @@ const App = () => {
         <Friends
           data={friends}
           onAddFriends={handleAddFriend}
-          onBillOpen={handleBillOpen}
           onSelect={handleSelect}
           selected={selected}
         />
