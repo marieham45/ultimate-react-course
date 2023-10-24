@@ -2,7 +2,7 @@ const Friend = ({ person, onSelect, selected }) => {
   const { id, name, image, balance } = person;
 
   return (
-    <li>
+    <li className={`${selected ? "selected" : ""}`}>
       <img src={image} alt="profile-pic" />
       <h3>{name}</h3>
       <p className={`${balance < 0 ? "red" : balance === 0 ? "" : "green"}`}>
