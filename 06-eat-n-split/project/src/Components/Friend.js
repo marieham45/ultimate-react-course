@@ -1,9 +1,13 @@
-const Friend = ({ person, onSelect, selected }) => {
+import Button from "./Button";
+
+const Friend = ({ person, onSelect, selectedFriend }) => {
   const { id, name, image, balance } = person;
 
+  const isSelected = selectedFriend?.id == person.id;
+
   return (
-    <li className={`${selected ? "selected" : ""}`}>
-      <img src={image} alt="profile-pic" />
+    <li className={`${isSelected ? "selected" : ""}`}>
+      <img src={image} alt={name} />
       <h3>{name}</h3>
       <p className={`${balance < 0 ? "red" : balance === 0 ? "" : "green"}`}>
         {balance < 0
@@ -12,9 +16,9 @@ const Friend = ({ person, onSelect, selected }) => {
           ? `You and ${name} are even`
           : `${name} owes you ${balance}$`}
       </p>
-      <button className="button" onClick={() => onSelect(id)}>
-        {`${selected ? "Close" : "Select"}`}
-      </button>
+      <Button onClick={() => onSelect(person)}>
+        {isSelected ? "Close" : "Select"}
+      </Button>
     </li>
   );
 };

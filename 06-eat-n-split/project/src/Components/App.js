@@ -1,37 +1,38 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import initialFriends from "../Data";
 import Friends from "./Friends";
 import Bill from "./Bill";
 import Form from "./Form";
+import Button from "./Button";
 
 const App = () => {
   const [friends, setFriends] = useState(initialFriends);
-  const [billOpen, setBillOpen] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
-  const [selected, setSelected] = useState(null);
-  const [billValue, setBillValue] = useState("");
-  const [yourExpense, setYourExpense] = useState("");
-  const [friendExpense, setFriendExpense] = useState("");
+  const [selectedFriend, setSelectedFriend] = useState(null);
 
   const handleAddFriend = (friend) => {
     setFriends((friends) => (friends = [...friends, friend]));
     setFormOpen(false);
   };
 
-  const handleBillSubmit = (billValue, yourExpense, friendExpense) => {
-    setBillValue(billValue);
-    setYourExpense(yourExpense);
-    setFriendExpense(friendExpense);
+  const handleBillSubmit = (value) => {
+    setFriends((friends) =>
+      friends.map((friend) => {
+        return friend.id === selectedFriend.id
+          ? { ...friend, balance: friend.balance + value }
+          : friend;
+      })
+    );
+    setSelectedFriend(null);
   };
 
-  const handleSelect = (id) => {
-    if (id !== selected) {
-      setSelected(id);
-      setBillOpen(true);
+  const handleSelect = (friend) => {
+    if (friend.id !== selectedFriend?.id) {
+      setSelectedFriend(friend);
     } else {
-      setSelected(null);
-      setBillOpen(false);
+      setSelectedFriend(null);
     }
+    setFormOpen(false);
   };
 
   return (
@@ -39,21 +40,16 @@ const App = () => {
       <div className="sidebar">
         <Friends
           data={friends}
-          onAddFriends={handleAddFriend}
           onSelect={handleSelect}
-          selected={selected}
+          selectedFriend={selectedFriend}
         />
         {formOpen && <Form onAddFriend={handleAddFriend} />}
-        <button className="button" onClick={() => setFormOpen(!formOpen)}>
-          {`${formOpen ? "Close" : "Add friend"}`}
-        </button>
+        <Button onClick={() => setFormOpen(!formOpen)}>
+          {formOpen ? "Close" : "Add friend"}
+        </Button>
       </div>
-      {billOpen && (
-        <Bill
-          data={friends}
-          selected={selected}
-          onBillSubmit={handleBillSubmit}
-        />
+      {selectedFriend && (
+        <Bill selectedFriend={selectedFriend} onBillSubmit={handleBillSubmit} />
       )}
     </div>
   );
