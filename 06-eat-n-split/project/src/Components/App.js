@@ -49,7 +49,7 @@ const App = () => {
         </Button>
       </div>
       {selectedFriend && (
-        <Bill selectedFriend={selectedFriend} onBillSubmit={handleBillSubmit} />
+        <Bill selectedFriend={selectedFriend} onBillSubmit={handleBillSubmit} key={selectedFriend.id} />
       )}
     </div>
   );
