@@ -1,13 +1,12 @@
 import Navbar from "./components/Navbar";
 import Main from "./components/Main";
-import React, {useEffect, useState} from "react";
+import {useState} from "react";
 import NumResults from "./components/NumResults";
 import Search from "./components/Search";
 import MovieList from "./components/MovieList";
 import Box from "./components/Box";
 import WatchedSummary from "./components/WatchedSummary";
 import WatchedMovieList from "./components/WatchedMovieList";
-import Loader from "./components/Loader";
 
 const tempMovieData = [
     {
@@ -56,25 +55,11 @@ const tempWatchedData = [
     },
 ];
 
-const KEY = '2d4403d'
 
 export default function App() {
 
-    const [movies, setMovies] = useState([]);
-    const [watched, setWatched] = useState([]);
-    const [isLoading, setIsLoading] = useState(false)
-    const query = 'titanic'
-
-
-    useEffect(() => {
-        setIsLoading(true)
-        fetch(`http://www.omdbapi.com/?apikey=${KEY}&s=${query}`)
-            .then(res => res.json())
-            .then(data => setMovies(data.Search))
-            .then(() => setIsLoading(false))
-
-    }, [])
-
+    const [movies, setMovies] = useState(tempMovieData);
+    const [watched, setWatched] = useState(tempWatchedData);
 
     return (
         <>
@@ -84,7 +69,7 @@ export default function App() {
             </Navbar>
             <Main>
                 <Box>
-                    {isLoading ? <p className="loader">Loading...</p> : <MovieList movies={movies}/>}
+                    {<MovieList movies={movies}/>}
                 </Box>
                 <Box>
                     <WatchedSummary watched={watched}/>
