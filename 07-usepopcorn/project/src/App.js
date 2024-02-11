@@ -8,6 +8,8 @@ import Box from "./components/Box";
 import WatchedSummary from "./components/WatchedSummary";
 import WatchedMovieList from "./components/WatchedMovieList";
 import Loader from "./components/Loader";
+import ErrorMessage from "./components/ErrorMessage";
+import MovieDetail from "./components/MovieDetail";
 
 const tempMovieData = [
     {
@@ -62,33 +64,73 @@ export default function App() {
 
     const [movies, setMovies] = useState([]);
     const [watched, setWatched] = useState([]);
+    const [query, setQuery] = useState("");
     const [isLoading, setIsLoading] = useState(false)
-    const query = 'titanic'
+    const [error, setError] = useState("")
+    const [selectedId, setSelectedId] = useState(null)
 
+    const handleSelectMovie = (id) => {
+        setSelectedId(selectedId => selectedId === id ? null : id)
+    }
+
+    const handleCloseMovie = () => {
+        setSelectedId(null)
+    }
 
     useEffect(() => {
-        setIsLoading(true)
-        fetch(`http://www.omdbapi.com/?apikey=${KEY}&s=${query}`)
-            .then(res => res.json())
-            .then(data => setMovies(data.Search))
-            .then(() => setIsLoading(false))
+        //setIsLoading(true)
+        // fetch(`http://www.omdbapi.com/?apikey=${KEY}&s=${query}`)
+        //     .then(res => {
+        //         if (!res.ok) throw new Error("Something went wrong with fetching movies")
+        //         res.json()
+        //     })
+        //     .then(data => setMovies(data.Search))
+        //     .then(() => setIsLoading(false))
 
-    }, [])
+        async function fetchMovies() {
+            try {
+                setIsLoading(true);
+                setError("")
+                const res = await fetch(`http://www.omdbapi.com/?apikey=${KEY}&s=${query}`)
+
+                if (!res.ok) throw new Error("Something went wrong with fetching movies")
+
+                const data = await res.json()
+                if (data.Response === 'False') throw new Error(data.Error)
+
+                setMovies(data.Search)
+            } catch (err) {
+                console.log(err.message)
+                setError(err.message)
+            } finally {
+                setIsLoading(false)
+            }
+        }
+
+        if (query.length < 3) {
+            setMovies([])
+            setError("")
+            return
+        }
+        fetchMovies()
+    }, [query])
 
 
     return (
         <>
             <Navbar>
-                <Search/>
+                <Search setQuery={setQuery} query={query}/>
                 <NumResults movies={movies}/>
             </Navbar>
             <Main>
                 <Box>
-                    {isLoading ? <p className="loader">Loading...</p> : <MovieList movies={movies}/>}
+                    {isLoading && <Loader/>}
+                    {!isLoading && !error && <MovieList movies={movies} onSelectMovie={handleSelectMovie}/>}
+                    {error && <ErrorMessage message={error}/>}
                 </Box>
                 <Box>
-                    <WatchedSummary watched={watched}/>
-                    <WatchedMovieList watched={watched}/>
+                    {selectedId ? <MovieDetail onCloseMovie={handleCloseMovie} selectedId={selectedId}/> : <><WatchedSummary watched={watched}/>
+                        <WatchedMovieList watched={watched}/></>}
                 </Box>
             </Main>
 
