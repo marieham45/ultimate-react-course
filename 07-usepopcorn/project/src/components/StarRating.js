@@ -35,7 +35,7 @@ const StarRating = ({
 
     const handleRating = (num) => {
         setRating(num)
-        onSetRating(num)
+        onSetRating && onSetRating(num)
     }
 
     const handleHoverIn = (num) => {

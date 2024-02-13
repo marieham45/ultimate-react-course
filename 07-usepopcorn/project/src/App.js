@@ -58,7 +58,7 @@ const tempWatchedData = [
     },
 ];
 
-const KEY = '2d4403d'
+export const KEY = '2d4403d'
 
 export default function App() {
 
@@ -75,6 +75,15 @@ export default function App() {
 
     const handleCloseMovie = () => {
         setSelectedId(null)
+    }
+
+    const handleAddWatched = (movie) => {
+
+        setWatched(watched => [...watched, movie])
+    }
+
+    const handleRemoveWatched = (id) => {
+        setWatched(watched => watched.filter(mov => mov.imdbID !== id))
     }
 
     useEffect(() => {
@@ -100,7 +109,6 @@ export default function App() {
 
                 setMovies(data.Search)
             } catch (err) {
-                console.log(err.message)
                 setError(err.message)
             } finally {
                 setIsLoading(false)
@@ -129,8 +137,8 @@ export default function App() {
                     {error && <ErrorMessage message={error}/>}
                 </Box>
                 <Box>
-                    {selectedId ? <MovieDetail onCloseMovie={handleCloseMovie} selectedId={selectedId}/> : <><WatchedSummary watched={watched}/>
-                        <WatchedMovieList watched={watched}/></>}
+                    {selectedId ? <MovieDetail watched={watched} onAddWatched={handleAddWatched} onCloseMovie={handleCloseMovie} selectedId={selectedId}/> : <><WatchedSummary watched={watched}/>
+                        <WatchedMovieList watched={watched} onRemoveWatched={handleRemoveWatched}/></>}
                 </Box>
             </Main>
 
