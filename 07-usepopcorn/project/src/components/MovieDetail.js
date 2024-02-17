@@ -27,6 +27,7 @@ const MovieDetail = ({selectedId, onCloseMovie, onAddWatched, watched}) => {
 
     useEffect(() => {
         async function getMovieDetails() {
+
             try {
                 setIsLoading(true);
                 setError("")
@@ -40,16 +41,41 @@ const MovieDetail = ({selectedId, onCloseMovie, onAddWatched, watched}) => {
                 setMovie(data)
             } catch
                 (err) {
-                setError(err.message)
+                    setError(err.message)
+
             } finally {
                 setIsLoading(false)
             }
         }
 
         getMovieDetails()
+
+
     }, [selectedId])
 
+    useEffect(() => {
+        if (!title) return
+        document.title = `MOVIE | ${title}`
 
+        // cleanup
+        return (() => {
+            document.title = "usePopcorn"
+        })
+    }, [title])
+
+    useEffect(() => {
+        const handleEscape = (e) => {
+            e.code === "Escape" && onCloseMovie()
+        }
+        if (selectedId) {
+            document.addEventListener('keydown', handleEscape)
+        }
+
+        //cleanup
+        return (() => {
+            document.removeEventListener('keydown', handleEscape)
+        })
+    }, [onCloseMovie, selectedId])
 
     const handleWatched = () => {
         const newWatchedMovie = {
