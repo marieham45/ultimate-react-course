@@ -3,6 +3,7 @@ import {KEY} from "../App";
 import StarRating from "./StarRating";
 import Loader from "./Loader";
 import ErrorMessage from "./ErrorMessage";
+import {useKey} from "../hooks/useKey";
 
 const MovieDetail = ({selectedId, onCloseMovie, onAddWatched, watched}) => {
     const [movie, setMovie] = useState({})
@@ -69,19 +70,7 @@ const MovieDetail = ({selectedId, onCloseMovie, onAddWatched, watched}) => {
         })
     }, [title])
 
-    useEffect(() => {
-        const handleEscape = (e) => {
-            e.code === "Escape" && onCloseMovie()
-        }
-        if (selectedId) {
-            document.addEventListener('keydown', handleEscape)
-        }
-
-        //cleanup
-        return (() => {
-            document.removeEventListener('keydown', handleEscape)
-        })
-    }, [onCloseMovie, selectedId])
+useKey("Escape", onCloseMovie)
 
     const handleWatched = () => {
         const newWatchedMovie = {
