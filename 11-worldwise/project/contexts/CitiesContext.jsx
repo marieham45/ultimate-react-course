@@ -34,11 +34,57 @@ const CitiesProvider = ({children}) => {
         }
     }
 
-    return  <CitiesContext.Provider value={{
+    const createCity = (newCity) => {
+        try {
+            setIsLoading(true)
+            fetch(`http://localhost:3000/cities`,
+                {
+                    method: "POST",
+                    body: JSON.stringify(newCity),
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                }
+            )
+                .then(res => res.json())
+                .then(data => setCities(cities => [...cities, data]))
+        } catch (error) {
+            console.log(error)
+        } finally {
+            setIsLoading(false)
+        }
+    }
+
+    const deleteCity = (id) => {
+        setIsLoading(true);
+        fetch(`http://localhost:3000/cities/${id}`, {
+            method: "DELETE"
+        })
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error('City not found or unable to delete.');
+                }
+                return res.json();
+            })
+            .then(() => {
+                setCities(cities => cities.filter(city => city.id !== id));
+            })
+            .catch(error => {
+                console.log(error);
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
+    };
+
+    return <CitiesContext.Provider value={{
         cities,
+        setCities,
         isLoading,
         currentCity,
-        getCity
+        getCity,
+        createCity,
+        deleteCity
     }}>{children}</CitiesContext.Provider>
 }
 
