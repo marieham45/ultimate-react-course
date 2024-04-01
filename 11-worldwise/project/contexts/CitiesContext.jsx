@@ -1,4 +1,4 @@
-import {createContext, useContext, useEffect, useReducer} from "react";
+import {createContext, useCallback, useContext, useEffect, useReducer} from "react";
 
 const CitiesContext = createContext()
 
@@ -43,7 +43,7 @@ const CitiesProvider = ({children}) => {
         })
     }, [])
 
-    const getCity = (id) => {
+    const getCity = useCallback( (id) => {
             dispatch({type: "loading"})
             fetch(`http://localhost:3000/cities/${id}`)
                 .then(res => res.json())
@@ -51,7 +51,7 @@ const CitiesProvider = ({children}) => {
             catch (() => {
                 dispatch({type: "rejected", payload: "There was an error loading the city..."})
         })
-    }
+    }, [currentCity.id])
 
     const createCity = (newCity) => {
             dispatch({type: "loading"})
