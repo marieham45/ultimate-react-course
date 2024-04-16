@@ -41,7 +41,7 @@ function CreateOrder() {
     const cart = fakeCart;
 
     return (
-        <div>
+        <div className="">
             <h2>Ready to order? Let's go!</h2>
 
             {/*<Form method="POST" action="/order/new">*/}
@@ -79,7 +79,12 @@ function CreateOrder() {
 
                 <div>
                     <input type="hidden" name="cart" value={JSON.stringify(cart)}/>
-                    <button disabled={isSubmitting}>{isSubmitting ? "Placing order" : "Order now"}</button>
+                    <button className="bg-yellow-400 font-semibold uppercase
+                    text-stone-800 py-3 px-4 inline-block tracking-wide rounded-full
+                    hover:bg-yellow-300 transition-colors duration-300
+                    focus:outline-none focus:ring-yellow-300 focus:bg-yellow-300
+                    focus:ring-offset-2 disabled:cursor-not-allowed"
+                            disabled={isSubmitting}>{isSubmitting ? "Placing order" : "Order now"}</button>
                 </div>
             </Form>
         </div>
@@ -95,10 +100,12 @@ export const action = async ({request}) => {
         priority: data.priority === "on"
     }
     const errors = {}
-    if(!isValidPhone(order.phone)) errors.phone = 'Invalid phone number format!'
+    if (!isValidPhone(order.phone)) errors.phone = 'Invalid phone number format!'
     if (Object.keys(errors).length > 0) return errors
 
-    const newOrder = await createOrder(order)
-    return redirect(`/order/${newOrder.id}`)
+    // const newOrder = await createOrder(order)
+    // return redirect(`/order/${newOrder.id}`)
+
+    return null
 }
 export default CreateOrder;
